@@ -27,14 +27,21 @@ docker inspect redis_s | grep IPAddress 查看ip
 **两大维度**：   
     系统维度和应用维度        
 **三大主线**：   
-       1.  高性能：线程模型、数据结构、持久化、网络框架；
-       2.  高可靠性：主从复制、哨兵机制；
-       3.  高扩展性：数据分片、负载均衡。
-           ![image](https://note.youdao.com/yws/res/5965/83197AD35ED042879BE15B8BB890100A)
-           ![image](https://note.youdao.com/yws/res/5968/B7862F9623B040F6BB70D7F888CFCBEB)   
+   1. 高性能：线程模型、数据结构、持久化、网络框架；
+
+   2. 高可靠性：主从复制、哨兵机制；
+
+   3. 高扩展性：数据分片、负载均衡。
+
+      ![image-20220818164208217](.\image\Redis\image-20220818164208217.png)
+
+      ![image-20220818164224052](E:\calmkNote\image\Redis\image-20220818164224052.png)
+
+   4. ![image-20220818165646917](.\Redis.assets\image-20220818165646917.png)
 
 ### 数据结构及操作
 **五种基本数据结构**
+
 - 字符串：sds
     SDS：保存了字符串长度及free的空间
 - 列表：hash表 + 链表
