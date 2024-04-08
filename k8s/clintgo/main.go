@@ -5,6 +5,7 @@ import (
 	"clinetgo/model"
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/gogf/gf/v2/os/gfile"
 )
@@ -15,7 +16,7 @@ func main() {
 }
 
 func TestCluster() {
-	configfilebytes := gfile.GetBytes("/root/.kube/config")
+	configfilebytes := gfile.GetBytes(os.Getenv("HOME") + "/.kube/config")
 	cluster := model.Cluster{
 		Spec: model.Spec{
 			Connect: model.Connect{Direction: "forward"},
