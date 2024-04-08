@@ -8,6 +8,7 @@ type Cluster struct {
 	PrivateKey    []byte      `json:"privateKey"`
 	Status        Status      `json:"status"`
 	Labels        []string    `json:"labels"`
+	Namespace     string      `json:"namespace"`
 }
 
 type Spec struct {

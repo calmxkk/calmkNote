@@ -24,6 +24,7 @@ func TestCluster() {
 				Mode:              "configfile",
 				ConfigFileContent: configfilebytes},
 		},
+		Namespace: "kube-system",
 	}
 	ctx := context.Background()
 	k8s := kubernetes.NewKubernetesCluster()
@@ -33,6 +34,6 @@ func TestCluster() {
 	}
 	fmt.Println(version)
 
-	err = k8s.Ping(ctx, &cluster)
+	err = k8s.GetPodByNamespace(ctx, &cluster)
 	fmt.Println(err)
 }

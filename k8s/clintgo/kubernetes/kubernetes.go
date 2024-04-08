@@ -89,3 +89,32 @@ func (k *sKubernetesCluster) Ping(ctx context.Context, in *model.Cluster) error 
 }
 
 // func (k *sKubernetesCluster) GetUserNamespaceNames(ctx context.Context, in *model.Cluster)
+
+func (k *sKubernetesCluster) GetPodByNamespace(ctx context.Context, in *model.Cluster) error {
+	client, err := k.Client(ctx, in)
+	if err != nil {
+		return err
+	}
+
+	pods, err := client.CoreV1().Pods(in.Namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return err
+	}
+
+	for _, pod := range pods.Items {
+		fmt.Printf("%s\n", pod.Name)
+	}
+
+	deployments, err := client.AppsV1().Deployments(in.Namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return err
+	}
+
+	fmt.Println()
+
+	for _, pod := range deployments.Items {
+		fmt.Printf("%s\n", pod.Name)
+	}
+
+	return nil
+}
