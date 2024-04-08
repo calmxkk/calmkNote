@@ -1,51 +1,37 @@
 package main
 
 import (
+	"clinetgo/kubernetes"
+	"clinetgo/model"
 	"context"
-	"flag"
 	"fmt"
-	"os"
-	"path/filepath"
-	"time"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+	"github.com/gogf/gf/v2/os/gfile"
 )
 
 func main() {
-	var kubeconfig *string
-	if home := homeDir(); home != "" {
-		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-	} else {
-		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-	}
-	fmt.Println("kubeconfig: ", *kubeconfig)
-	flag.Parse()
-	// uses the current context in kubeconfig
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
-	if err != nil {
-		panic(err.Error())
-	}
-	// creates the clientset
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		panic(err.Error())
-	}
-	for {
-		pods, err := clientset.CoreV1().Pods("").List(context.Background(), metav1.ListOptions{})
-		if err != nil {
-			panic(err.Error())
-		}
-		fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
-		time.Sleep(10 * time.Second)
-	}
+	TestCluster()
+
 }
 
-func homeDir() string {
-	if h := os.Getenv("HOME"); h != "" {
-		fmt.Println(os.Getenv("HOME"))
-		return h
+func TestCluster() {
+	configfilebytes := gfile.GetBytes("/root/.kube/config")
+	cluster := model.Cluster{
+		Spec: model.Spec{
+			Connect: model.Connect{Direction: "forward"},
+			Authentication: model.Authentication{
+				Mode:              "configfile",
+				ConfigFileContent: configfilebytes},
+		},
 	}
-	return os.Getenv("USERPROFILE") // windows
+	ctx := context.Background()
+	k8s := kubernetes.NewKubernetesCluster()
+	version, err := k8s.Version(ctx, &cluster)
+	if err != nil {
+		return
+	}
+	fmt.Println(version)
+
+	err = k8s.Ping(ctx, &cluster)
+	fmt.Println(err)
 }

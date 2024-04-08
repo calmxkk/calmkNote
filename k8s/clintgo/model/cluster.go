@@ -1,29 +1,29 @@
-package cluster
+package model
 
 type Cluster struct {
-	ApiVersion    string      `json:"apiVersion"`
-	Kind          string      `json:"kind"`
-	CaCertificate Certificate `json:"caCertificate" storm:"inline"`
-	Spec          Spec        `json:"spec" storm:"inline"`
+	// ApiVersion    string      `json:"apiVersion"`
+	// Kind          string      `json:"kind"`
+	CaCertificate Certificate `json:"caCertificate"`
+	Spec          Spec        `json:"spec"`
 	PrivateKey    []byte      `json:"privateKey"`
-	Status        Status      `json:"status" storm:"inline"`
+	Status        Status      `json:"status"`
 	Labels        []string    `json:"labels"`
 }
 
 type Spec struct {
-	Connect        Connect        `json:"connect" storm:"inline"`
-	Authentication Authentication `json:"authentication" storm:"inline"`
+	Connect        Connect        `json:"connect"`
+	Authentication Authentication `json:"authentication"`
 	Local          bool           `json:"local"`
 }
 
 type Connect struct {
 	Direction string  `json:"direction"`
-	Forward   Forward `json:"forward" storm:"inline"`
+	Forward   Forward `json:"forward"`
 }
 
 type Forward struct {
 	ApiServer string `json:"apiServer"`
-	Proxy     Proxy  `json:"proxy"   storm:"inline"`
+	Proxy     Proxy  `json:"proxy"  `
 }
 
 type Proxy struct {
@@ -35,7 +35,7 @@ type Proxy struct {
 type Authentication struct {
 	Mode              string      `json:"mode"`
 	BearerToken       string      `json:"bearerToken"`
-	Certificate       Certificate `json:"certificate" storm:"inline"`
+	Certificate       Certificate `json:"certificate"`
 	ConfigFileContent []byte      `json:"configFileContent"`
 }
 
