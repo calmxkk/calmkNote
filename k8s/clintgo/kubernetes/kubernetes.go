@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/version"
 	"k8s.io/client-go/kubernetes"
@@ -127,6 +127,6 @@ func (k *K8sClient) GetPodByNamespace(ctx context.Context, namespace string) err
 }
 
 func (k *K8sClient) CreatePod(ctx context.Context) {
-	pod := v1.Pod{}
+	pod := corev1.Pod{}
 	k.client.CoreV1().Pods().Create()
 }
