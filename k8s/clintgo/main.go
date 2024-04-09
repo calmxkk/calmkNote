@@ -15,7 +15,6 @@ func main() {
 
 }
 
-
 func TestPod() {
 	client := getClient()
 
@@ -28,18 +27,17 @@ func TestPod() {
 func TestCluster() {
 	client := getClient()
 
-	version, err := k8s.Version()
+	version, err := client.Version()
 	if err != nil {
 		return
 	}
 	fmt.Println(version)
 
-	err = k8s.GetPodByNamespace(ctx, cluster.Namespace)
+	err = client.GetPodByNamespace(ctx, cluster.Namespace)
 	fmt.Println(err)
-	err = k8s.GetUserNamespaceNames(ctx)
+	err = client.GetUserNamespaceNames(ctx)
 	fmt.Println(err)
 }
-
 
 func getClient() *kubernetes.K8sClient {
 	configfilebytes := gfile.GetBytes(os.Getenv("HOME") + "/.kube/config")
