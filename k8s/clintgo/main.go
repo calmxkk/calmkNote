@@ -27,13 +27,16 @@ func TestCluster() {
 		Namespace: "kube-system",
 	}
 	ctx := context.Background()
-	k8s := kubernetes.NewKubernetesCluster()
-	version, err := k8s.Version(ctx, &cluster)
+	k8s, _ := kubernetes.NewKubernetesCluster().Client(ctx, &cluster)
+	version, err := k8s.Version()
 	if err != nil {
 		return
 	}
 	fmt.Println(version)
 
-	err = k8s.GetPodByNamespace(ctx, &cluster)
+	err = k8s.GetPodByNamespace(ctx, cluster.Namespace)
 	fmt.Println(err)
+	err = k8s.GetUserNamespaceNames(ctx)
+	fmt.Println(err)
+
 }

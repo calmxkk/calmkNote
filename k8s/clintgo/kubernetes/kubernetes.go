@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/version"
 	"k8s.io/client-go/kubernetes"
@@ -18,6 +19,11 @@ type sKubernetesCluster struct{}
 
 func NewKubernetesCluster() *sKubernetesCluster {
 	return &sKubernetesCluster{}
+}
+
+type K8sClient struct {
+	config *rest.Config
+	client *kubernetes.Clientset
 }
 
 func (k *sKubernetesCluster) Config(ctx context.Context, in *model.Cluster) (*rest.Config, error) {
@@ -57,30 +63,27 @@ func (k *sKubernetesCluster) Config(ctx context.Context, in *model.Cluster) (*re
 	return nil, nil
 }
 
-func (k *sKubernetesCluster) Client(ctx context.Context, in *model.Cluster) (*kubernetes.Clientset, error) {
+func (k *sKubernetesCluster) Client(ctx context.Context, in *model.Cluster) (*K8sClient, error) {
 	cfg, err := k.Config(ctx, in)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	return kubernetes.NewForConfig(cfg)
+	client, _ := kubernetes.NewForConfig(cfg)
+
+	return &K8sClient{
+		config: cfg,
+		client: client,
+	}, nil
 }
 
-func (k *sKubernetesCluster) Version(ctx context.Context, in *model.Cluster) (*version.Info, error) {
-	client, err := k.Client(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-	return client.ServerVersion()
+func (k *K8sClient) Version() (*version.Info, error) {
+	return k.client.ServerVersion()
 }
 
-func (k *sKubernetesCluster) Ping(ctx context.Context, in *model.Cluster) error {
-	client, err := k.Client(ctx, in)
-	if err != nil {
-		return err
-	}
-	_, err = client.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
-	client.AuthorizationV1().SelfSubjectAccessReviews()
+func (k *K8sClient) Ping(ctx context.Context) error {
+	_, err := k.client.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
+	k.client.AuthorizationV1().SelfSubjectAccessReviews()
 	if err != nil {
 		return err
 	}
@@ -88,15 +91,19 @@ func (k *sKubernetesCluster) Ping(ctx context.Context, in *model.Cluster) error 
 	return nil
 }
 
-// func (k *sKubernetesCluster) GetUserNamespaceNames(ctx context.Context, in *model.Cluster)
-
-func (k *sKubernetesCluster) GetPodByNamespace(ctx context.Context, in *model.Cluster) error {
-	client, err := k.Client(ctx, in)
+func (k *K8sClient) GetUserNamespaceNames(ctx context.Context) error {
+	namespaces, err := k.client.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
 	if err != nil {
-		return err
+		return nil
 	}
+	for _, ns := range namespaces.Items {
+		fmt.Println(ns.Name)
+	}
+	return nil
+}
 
-	pods, err := client.CoreV1().Pods(in.Namespace).List(ctx, metav1.ListOptions{})
+func (k *K8sClient) GetPodByNamespace(ctx context.Context, namespace string) error {
+	pods, err := k.client.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return err
 	}
@@ -105,7 +112,7 @@ func (k *sKubernetesCluster) GetPodByNamespace(ctx context.Context, in *model.Cl
 		fmt.Printf("%s\n", pod.Name)
 	}
 
-	deployments, err := client.AppsV1().Deployments(in.Namespace).List(ctx, metav1.ListOptions{})
+	deployments, err := k.client.AppsV1().Deployments(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return err
 	}
@@ -117,4 +124,9 @@ func (k *sKubernetesCluster) GetPodByNamespace(ctx context.Context, in *model.Cl
 	}
 
 	return nil
+}
+
+func (k *K8sClient) CreatePod(ctx context.Context) {
+	pod := v1.Pod{}
+	k.client.CoreV1().Pods().Create()
 }
