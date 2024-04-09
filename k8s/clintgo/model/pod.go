@@ -2,7 +2,7 @@ package model
 
 type Metadata struct {
 	Name   string
-	Lables []map[string]string
+	Lables map[string]string
 }
 
 type PodSpec struct {
@@ -10,8 +10,9 @@ type PodSpec struct {
 }
 
 type Container struct {
-	Name  string
-	Image string
+	Name            string
+	Image           string
+	ImagePullPolicy string
 }
 
 type Pod struct {

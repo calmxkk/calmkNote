@@ -126,7 +126,31 @@ func (k *K8sClient) GetPodByNamespace(ctx context.Context, namespace string) err
 	return nil
 }
 
-func (k *K8sClient) CreatePod(ctx context.Context) {
-	pod := corev1.Pod{}
-	k.client.CoreV1().Pods().Create()
+func (k *K8sClient) CreatePod(ctx context.Context, in *model.Pod) (*corev1.Pod, error) {
+	if in == nil {
+		return nil, fmt.Errorf("%s", "no input data for create pod")
+	}
+
+	pod := &corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      in.Metadata.Name,
+			Labels:    in.Metadata.Lables,
+			Namespace: "default",
+		},
+		Spec: corev1.PodSpec{
+			Containers: []corev1.Container{
+				{
+					Name:            in.PodSpec.Containers[0].Name,
+					Image:           in.PodSpec.Containers[0].Image,
+					ImagePullPolicy: corev1.PullPolicy(in.PodSpec.Containers[0].ImagePullPolicy),
+				},
+			},
+		},
+	}
+
+	get_pod, err := k.client.CoreV1().Pods("default").Create(ctx, pod, metav1.CreateOptions{})
+	if err != nil {
+		return nil, err
+	}
+	return get_pod, nil
 }
