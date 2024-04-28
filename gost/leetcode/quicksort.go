@@ -1,6 +1,6 @@
 package leetcode
 
-func quickSort1(nums []int, left, right int) {
+func QuickSort1(nums []int, left, right int) {
 	if left > right {
 		return
 	}
@@ -23,11 +23,11 @@ func quickSort1(nums []int, left, right int) {
 	}
 	nums[moveleft], nums[left] = base, nums[moveleft]
 
-	quickSort1(nums, left, moveleft-1)
-	quickSort1(nums, moveleft+1, right)
+	QuickSort1(nums, left, moveleft-1)
+	QuickSort1(nums, moveleft+1, right)
 }
 
-func quicksort(nums []int) {
+func Quicksort(nums []int) {
 	left, right := 0, len(nums)-1
 	if left >= right {
 		return
@@ -50,6 +50,6 @@ func quicksort(nums []int) {
 	}
 	nums[left_index] = base
 
-	quicksort(nums[left:left_index])
-	quicksort(nums[left_index+1 : right+1])
+	Quicksort(nums[left:left_index])
+	Quicksort(nums[left_index+1 : right+1])
 }
