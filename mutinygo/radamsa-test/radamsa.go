@@ -1,7 +1,6 @@
 package radamsa_test
 
-func Test() {
-	str := "hello world"
+import "testing"
 
-	mutator := radamsa.New()
+func Test(t testing.T) {
 }
