@@ -1,24 +1,4 @@
-package main
-
-import "fmt"
-
-func main() {
-	var number, capacity int
-	_, err := fmt.Scanln(&number, &capacity)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	weight := make([]int, number)
-	value := make([]int, number)
-	for i := 0; i < number; i++ {
-		_, _ = fmt.Scanln(&weight[i])
-	}
-
-	for i := 0; i < number; i++ {
-		_, _ = fmt.Scanln(&value[i])
-	}
-}
+package leetcode
 
 func pa(weight, value []int, capacity int) int {
 	res := make([][]int, len(weight))
