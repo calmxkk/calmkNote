@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/gogf/gf/v2/os/gproc"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/gogf/gf/v2/os/gproc"
 
 	"github.com/gogf/gf/v2/frame/g"
 )
