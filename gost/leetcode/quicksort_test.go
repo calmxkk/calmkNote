@@ -7,8 +7,8 @@ import (
 )
 
 func TestQuicksort(t *testing.T) {
-	nums := []int{}
-	nums1 := []int{}
+	var nums []int
+	var nums1 []int
 	for i := 0; i < 20; i++ {
 		temp := rand.Intn(1000)
 		nums = append(nums, temp)
