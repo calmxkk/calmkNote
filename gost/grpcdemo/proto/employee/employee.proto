@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option go_package = "grpcdemo/proto/employee";
+
+package employee;
+
+import "google/protobuf/empty.proto";
+
+message Employee {
+  int32 id = 1;
+  string name = 2;
+  string position = 3;
+  double salary = 4;
+  string department = 5;
+}
+
+message EmployeeRequest {
+  int32 id = 1;
+}
+
+message EmployeeList {
+  repeated Employee employees = 1;
+}
+
+message CreateEmployeeRequest {
+  Employee employee = 1;
+}
+
+message UpdateEmployeeRequest {
+  Employee employee = 1;
+}
+
+message DeleteEmployeeRequest {
+  int32 id = 1;
+}
+
+message Response {
+  bool success = 1;
+  string message = 2;
+}
+
+service EmployeeService {
+  rpc GetEmployee(EmployeeRequest) returns (Employee);
+  rpc CreateEmployee(CreateEmployeeRequest) returns (Response);
+  rpc UpdateEmployee(UpdateEmployeeRequest) returns (Response);
+  rpc DeleteEmployee(DeleteEmployeeRequest) returns (Response);
+  rpc ListEmployees(google.protobuf.Empty) returns (EmployeeList);
+}
